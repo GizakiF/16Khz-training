@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
 from sklearn.metrics import (
     confusion_matrix, precision_recall_curve,
-    average_precision_score, balanced_accuracy_score, f1_score, recall_score, precision_score
+    average_precision_score, accuracy_score, balanced_accuracy_score, f1_score, recall_score, precision_score
 )
 
 # Load Data
@@ -33,14 +33,19 @@ tabSession_encoded = label_encoder.fit_transform(tabSession)
 day_groups = [(1, 4), (2, 5), (3, 6)]
 
 # Set number of iterations
-num_iterations = 10
+num_iterations = 1
+
 
 # Run 10 iterations
 for iteration in range(1, num_iterations + 1):
     print(f"\n🔄 Starting Iteration {iteration} / {num_iterations}")
 
     # Set iteration-specific directories
-    iteration_dir = f"../out/iteration_{iteration}"
+    if (num_iterations > 1):
+        iteration_dir = f"../output/iteration_{iteration}"
+    else:
+        iteration_dir = f"../output/day_session/"
+
     model_dir = os.path.join(iteration_dir, "models")
     plot_dir = os.path.join(iteration_dir, "plots")
     csv_dir = os.path.join(iteration_dir, "csv_results")
@@ -80,8 +85,16 @@ for iteration in range(1, num_iterations + 1):
 
         # Train-test split (shuffle different for each iteration)
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.25, random_state=iteration * 42, stratify=y
+            X, y, test_size=0.2, train_size=0.8, random_state=iteration * 42, stratify=y
         )
+
+        # X_train, X_temp, Y_train, Y_temp, = train_test_split(
+        #     X, y, test_size=0.2, random_state=iteration * 42, stratify=y
+        # )
+        #
+        # X_val, X_temp, Y_val, Y_temp, = train_test_split(
+        #     X, y, test_size=0.5, random_state=iteration * 42, stratify=y
+        # )
 
         # PCA for dimensionality reduction
         n_components = 250
@@ -97,7 +110,7 @@ for iteration in range(1, num_iterations + 1):
         param_grid = {
             'C': np.logspace(-3, 3, num=5), 'gamma': np.logspace(-3, 3, num=5)}
         clf = GridSearchCV(SVC(kernel='rbf', probability=True), param_grid, scoring='balanced_accuracy',
-                           cv=StratifiedKFold(n_splits=5), n_jobs=-1, return_train_score=True)
+                           cv=StratifiedKFold(n_splits=10), n_jobs=-1, return_train_score=True)
 
         clf.fit(X_train_pca, y_train)
 
@@ -115,6 +128,7 @@ for iteration in range(1, num_iterations + 1):
         recall = recall_score(y_test, y_pred)
         precision = precision_score(y_test, y_pred)
         balanced_acc = balanced_accuracy_score(y_test, y_pred)
+        # accuracy = accuracy_score(y_train, y_pred)
 
         # Compute specificity (True Negative Rate)
         tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
