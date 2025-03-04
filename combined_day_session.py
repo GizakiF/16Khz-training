@@ -4,6 +4,7 @@ import pickle
 import joblib
 import csv
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import seaborn as sns
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA
@@ -18,7 +19,45 @@ from sklearn.metrics import (
     f1_score,
     recall_score,
     precision_score,
+    precision_recall_curve,
 )
+
+
+def contain_all_results():
+    data = {
+        # Labels (true, predicted, scores)
+        "y_train": y_train,
+        "y_test": y_test,
+        "y_pred": y_pred,
+        "y_scores": y_scores,
+        # Features (raw & PCA-transformed)
+        "X_train": X_train,
+        "X_test": X_test,
+        "X_train_pca": X_train_pca,
+        "X_test_pca": X_test_pca,
+        # Performance Metrics
+        "f1_score": f1,
+        "recall_score": recall,
+        "precision_score": precision,
+        "balanced_accuracy": balanced_acc,
+        "specificity": specificity,
+        "conf_matrix": confusion_matrix(y_test, y_pred),
+        # Grid Search Resultsresults_,
+        "cv_results": clf.cv_results_,
+        "clf": clf,
+    }
+
+    # Save to pickle
+    pickle_path = os.path.join("../output/day_session/training_results", "results.pkl")
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(pickle_path), exist_ok=True)
+
+    # Save data to pickle file
+    with open(pickle_path, "wb") as f:
+        pickle.dump(data, f)
+
+    print(f"✅ Results saved to {pickle_path}")
+
 
 # Load Data
 data_path = os.path.expanduser(
@@ -186,7 +225,10 @@ else:
         os.path.join(plot_dir, f"confusion_matrix_combined.png"), bbox_inches="tight"
     )
     plt.close()
+    contain_all_results()
 
-    print(f"✅ Iteration {iteration} - Model for Combined Data saved successfully!")
-print("\n🎉 All models, plots, and metrics saved per iteration!")
-print("\n🎉 All models, plots, and metrics saved per iteration!")
+
+print(f"✅ Iteration {iteration} - Model for Combined Data saved successfully!")
+print(
+    f"\n🎉 All models, plots, and metrics saved per iteration! Saved to: 📂 {model_dir}"
+)
