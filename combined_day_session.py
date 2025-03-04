@@ -48,7 +48,8 @@ def contain_all_results():
     }
 
     # Save to pickle
-    pickle_path = os.path.join("../output/day_session/training_results", "results.pkl")
+    pickle_path = os.path.join(
+        "../output/day_session/training_results", "results.pkl")
     # Ensure directory exists
     os.makedirs(os.path.dirname(pickle_path), exist_ok=True)
 
@@ -101,7 +102,8 @@ for iteration in range(1, num_iterations + 1):
     os.makedirs(csv_dir, exist_ok=True)
 
     # CSV file for storing performance metrics (separate file per iteration)
-    csv_file_path = os.path.join(csv_dir, f"model_performance_iter{iteration}.csv")
+    csv_file_path = os.path.join(
+        csv_dir, f"model_performance_iter{iteration}.csv")
 
     # Prepare CSV file (overwrite for each iteration)
     with open(csv_file_path, mode="w", newline="") as csv_file:
@@ -159,7 +161,8 @@ else:
     joblib.dump(pca, pca_filename)
 
     # Train SVM with GridSearchCV
-    param_grid = {"C": np.logspace(-3, 3, num=5), "gamma": np.logspace(-3, 3, num=5)}
+    param_grid = {"C": np.logspace(-3, 3, num=5),
+                  "gamma": np.logspace(-3, 3, num=5)}
     clf = GridSearchCV(
         SVC(kernel="rbf", probability=True),
         param_grid,
@@ -204,7 +207,8 @@ else:
             ]
         )
         writer.writerow(
-            [iteration, "Combined", f1, specificity, recall, precision, balanced_acc]
+            [iteration, "Combined", f1, specificity,
+                recall, precision, balanced_acc]
         )
 
     # Save Confusion Matrix
@@ -230,5 +234,5 @@ else:
 
 print(f"✅ Iteration {iteration} - Model for Combined Data saved successfully!")
 print(
-    f"\n🎉 All models, plots, and metrics saved per iteration! Saved to: 📂 {model_dir}"
+    f"\n🎉 All models, plots, and metrics saved per iteration! Saved to: 📂 {momodel_dir}")
 )

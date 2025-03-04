@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 # from enum import Enum
 # import numpy as np
@@ -9,7 +10,8 @@ import pickle
 import matplotlib.pyplot as plt
 
 # import matplotlib.patches as mpatches
-# import seaborn as sns
+import seaborn as sns
+
 # from sklearn.svm import SVC
 # from sklearn.decomposition import PCA
 # from sklearn.preprocessing import LabelEncoder
@@ -26,7 +28,8 @@ from sklearn.metrics import (
 )
 
 
-def precision_recall_curve():
+# TODO: reduce the thickness of the lines
+def plot_precision_recall_curve():
     # Compute precision-recall curves for each class separately
     precision_pre, recall_pre, _ = precision_recall_curve(
         Results.y_test, 1 - Results.y_scores, pos_label=0
@@ -182,9 +185,77 @@ def perfomance_metrics():
             # Save and Show Plot
             plot_filename = f"metrics_{
                 metric_name.lower().replace(' ', '_')}.png"
+            # TODO: Check
+            # os.makedirs(os.path.dirname(plot_dir), exist_ok=True)
+            # os.mknod(os.path.join(plot_dir, plot_filename))
             plt.savefig(os.path.join(plot_dir, plot_filename),
                         bbox_inches="tight")
             plt.close()
+
+
+def plot_performance_metrics():
+    metrics = {
+        "Accuracy": ("mean_train_score", "mean_test_score"),
+        "Precision": ("mean_train_precision", "mean_test_precision"),
+        "Recall": ("mean_train_recall", "mean_test_recall"),
+        "F1-Score": ("mean_train_f1", "mean_test_f1"),
+        "Balanced Accuracy": (
+            "mean_train_balanced_accuracy",
+            "mean_test_balanced_accuracy",
+        ),
+    }
+
+    for metric_name, (train_key, val_key) in metrics.items():
+        train_metric = np.array(Results.cv_results.get(train_key, []))
+        val_metric = np.array(Results.cv_results.get(val_key, []))
+
+        if train_metric.size > 0 and val_metric.size > 0:
+            plt.figure(figsize=(8, 6))
+
+            # Ensure continuous lines by removing markers
+            plt.plot(
+                train_metric, label=f"Train {metric_name}", color="blue", linewidth=2
+            )
+            plt.plot(
+                val_metric,
+                label=f"Validation {metric_name}",
+                color="orange",
+                linewidth=2,
+            )
+
+            plt.xlabel("Hyperparameter Index")
+            plt.ylabel(metric_name)
+            plt.title(f"Training vs. Validation {metric_name}")
+            plt.legend()
+            plt.grid()
+
+            # Save each metric as a separate PNG
+            plot_filename = f"metrics_{
+                metric_name.lower().replace(' ', '_')}.png"
+            plt.savefig(os.path.join(plot_dir, plot_filename),
+                        bbox_inches="tight")
+            plt.close()
+
+
+# def confusion_matrix_graph():
+#     # Save Confusion Matrix
+#     conf_matrix = confusion_matrix(Results.y_test, Results.y_pred)
+#     plt.figure(figsize=(6, 5))
+#     sns.heatmap(
+#         conf_matrix,
+#         annot=True,
+#         fmt="d",
+#         cmap="Blues",
+#         xticklabels=label_encoder.classes_,
+#         yticklabels=label_encoder.classes_,
+#     )
+#     plt.xlabel("Predicted Label")
+#     plt.ylabel("True Label")
+#     plt.title(f"Confusion Matrix - Combined Data (Iteration {iteration})")
+#     plt.savefig(
+#         os.path.join(plot_dir, f"confusion_matrix_combined.png"), bbox_inches="tight"
+#     )
+#     plt.close()
 
 
 data_path = os.path.expanduser(
@@ -228,9 +299,9 @@ print(Results.y_test)
 
 
 def main():
-    precision_recall_curve()
+    plot_precision_recall_curve()
     training_validation_loss()
-    perfomance_metrics()
+    plot_performance_metrics()
 
 
 if __name__ == "__main__":
