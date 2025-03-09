@@ -234,5 +234,6 @@ else:
 
 print(f"✅ Iteration {iteration} - Model for Combined Data saved successfully!")
 print(
-    f"\n🎉 All models, plots, and metrics saved per iteration! Saved to: 📂 {momodel_dir}")
+    f"\n🎉 All models, plots, and metrics saved per iteration! Saved to: 📂 {
+        model_dir}"
 )
