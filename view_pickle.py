@@ -1,13 +1,13 @@
 import pickle
 import os
 
-data_path = os.path.expanduser(
-    "~/Research/Sleep Deprivation Detection using voice/dataset/osf/stmtf/strf_session_pre_subjectNb_01_daySession_01_segmentNb_0.pkl"
-)
-
 # data_path = os.path.expanduser(
-#     "~/Research/Sleep Deprivation Detection using voice/dataset/osf/data.pkl"
+#     "~/Research/Sleep Deprivation Detection using voice/dataset/osf/stmtf/strf_session_pre_subjectNb_01_daySession_01_segmentNb_0.pkl"
 # )
+
+data_path = os.path.expanduser(
+    "~/Research/Sleep Deprivation Detection using voice/dataset/osf/data.pkl"
+)
 
 with open(data_path, "rb") as f:
     data = pickle.load(f)
@@ -46,4 +46,5 @@ for key in data.keys():
 #     "\nUnique subjects and their counts:",
 #     np.unique(data["tabDaySession"], return_counts=True),
 # )
-print(f"\nfs: {data['fs']}")
+unique_day_sessions = set(data["tabDaySession"])
+print(f"\nDay Session: {unique_day_sessions}")

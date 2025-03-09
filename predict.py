@@ -34,5 +34,6 @@ X_pca = pca.transform(strf.reshape(1, -1))
 
 y_pred = svm.predict(X_pca)
 
+# 0 - post. 1 - pre
 print("All classes in the model:", svm.classes_)
 print("Predicted class:", y_pred)
