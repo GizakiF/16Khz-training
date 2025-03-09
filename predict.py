@@ -11,7 +11,7 @@ pca_path = os.path.expanduser(
     "~/Research/Sleep Deprivation Detection using voice/output/day_session/models/pca_combined.pkl"
 )
 test_sample_path = os.path.expanduser(
-    "~/Research/Sleep Deprivation Detection using voice/dataset/osf/stmtf/strf_session_pre_subjectNb_06_daySession_03_segmentNb_8.pkl"
+    "~/Research/Sleep Deprivation Detection using voice/dataset/osf/stmtf/strf_session_pre_subjectNb_01_daySession_01_segmentNb_0.pkl"
 )
 
 svm = joblib.load(svm_path)
@@ -30,8 +30,9 @@ if strf.shape[0] != expected_features:
         }."
     )
 
-X_pca = pca.transform(strf.reshape(1, -1))  # Reshape to (1, features)
+X_pca = pca.transform(strf.reshape(1, -1))
 
 y_pred = svm.predict(X_pca)
 
+print("All classes in the model:", svm.classes_)
 print("Predicted class:", y_pred)
