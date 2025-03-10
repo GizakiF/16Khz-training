@@ -32,7 +32,8 @@ def preprocess_audio(input_file, output_dir, segment_length=15, target_sr=16000)
 
     # Resample from 44.1kHz to 16kHz if necessary
     if sr != target_sr:
-        y_denoised = librosa.resample(y_denoised, orig_sr=sr, target_sr=target_sr)
+        y_denoised = librosa.resample(
+            y_denoised, orig_sr=sr, target_sr=target_sr)
         sr = target_sr
 
     # Calculate segment length in samples
@@ -55,6 +56,7 @@ def preprocess_audio(input_file, output_dir, segment_length=15, target_sr=16000)
 
 
 # Example usage
-input_audio = "Predi-COVID_0098_20200624100830_1_m4a_W_0.wav"
+# input_audio = "Predi-COVID_0098_20200624100830_1_m4a_W_0.wav"
+input_audio = os.path.expanduser("~/Downloads/mobym4a.wav")
 output_directory = "processed_audio"
 preprocess_audio(input_audio, output_directory)

@@ -2,8 +2,7 @@ import pickle
 import os
 
 data_path = os.path.expanduser(
-    "~/Research/Sleep Deprivation Detection using voice/dataset/osf/stmtf/strf_session_pre_subjectNb_01_daySession_01_segmentNb_0.pkl"
-)
+    "~/github/modified-strf-like-model/test_strf.pkl")
 
 # data_path = os.path.expanduser(
 #     "~/Research/Sleep Deprivation Detection using voice/dataset/osf/data.pkl"
